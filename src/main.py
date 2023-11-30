@@ -1,7 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-from .db.database import authenticate_user, register_user
+from .db.database import (
+    authenticate_user,
+    register_user,
+    enroll_student_in_course,
+    create_course,
+)
 
 
 app = FastAPI()
@@ -41,6 +46,37 @@ async def signup(user_data: SignupModel):
     if result == "User already exists":
         raise HTTPException(status_code=400, detail="Username already taken")
 
+    return {"message": result}
+
+
+class CourseCreate(BaseModel):
+    teacher_id: int
+    course_name: str
+    description: str
+
+
+@app.post("/teacher/create_course")
+async def create_course_endpoint(course_data: CourseCreate):
+    result = create_course(
+        course_data.teacher_id, course_data.course_name, course_data.description
+    )
+    if result == "Course with this name already exists":
+        raise HTTPException(status_code=400, detail=result)
+    return {"message": result}
+
+
+class CourseEnrollment(BaseModel):
+    student_id: int
+    course_id: int
+
+
+@app.post("/student/enroll")
+async def add_course(course_enrollment: CourseEnrollment):
+    result = enroll_student_in_course(
+        course_enrollment.student_id, course_enrollment.course_id
+    )
+    if result == "Student already enrolled in this course":
+        raise HTTPException(status_code=400, detail="Already enrolled in course")
     return {"message": result}
 
 

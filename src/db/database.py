@@ -70,3 +70,31 @@ def register_user(username, password, user_type):
         return f"An error occurred: {e}"
     finally:
         conn.close()
+
+
+def create_course(teacher_id, course_name, description):
+    # Check if the course already exists
+    course_exists_query = "SELECT * FROM Courses WHERE CourseName = %s;"
+    if execute_query(course_exists_query, (course_name,), fetch=True):
+        return "Course with this name already exists"
+
+    # Insert new course
+    insert_query = (
+        "INSERT INTO Courses (TeacherID, CourseName, Description) VALUES (%s, %s, %s);"
+    )
+    execute_query(insert_query, (teacher_id, course_name, description))
+    return "Course created successfully"
+
+
+def enroll_student_in_course(student_id, course_id):
+    # Check if the student is already enrolled in the course
+    enrollment_exists_query = (
+        "SELECT * FROM StudentCourse WHERE StudentID = %s AND CourseID = %s;"
+    )
+    if execute_query(enrollment_exists_query, (student_id, course_id), fetch=True):
+        return "Student already enrolled in this course"
+
+    # Enroll the student in the course
+    enroll_query = "INSERT INTO StudentCourse (StudentID, CourseID) VALUES (%s, %s);"
+    execute_query(enroll_query, (student_id, course_id))
+    return "Student enrolled successfully"
