@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
 
 from .db.database import (
@@ -6,6 +6,13 @@ from .db.database import (
     register_user,
     enroll_student_in_course,
     create_course,
+    get_teacher_courses,
+    get_student_courses,
+    get_all_courses,
+    get_course_details,
+    create_course_info_for_course,
+    create_assignment_for_course,
+    create_test_for_course,
 )
 
 
@@ -28,7 +35,17 @@ async def login(login_data: LoginModel):
     if user is None:
         raise HTTPException(status_code=401, detail="Incorrect username or password")
 
-    return {"message": "User logged in successfully", "user": user}
+    # Extract username and userType from the user record
+    id = user[0]
+    username = user[1]
+    userType = user[3]
+
+    return {
+        "message": "User logged in successfully",
+        "id": id,
+        "username": username,
+        "userType": userType,
+    }
 
 
 class SignupModel(BaseModel):
@@ -49,20 +66,119 @@ async def signup(user_data: SignupModel):
     return {"message": result}
 
 
+"""
+Teacher Endpoints
+
+"""
+
+
 class CourseCreate(BaseModel):
-    teacher_id: int
+    user_id: int
     course_name: str
     description: str
 
 
-@app.post("/teacher/create_course")
+@app.post("/teacher/createCourse")
 async def create_course_endpoint(course_data: CourseCreate):
     result = create_course(
-        course_data.teacher_id, course_data.course_name, course_data.description
+        course_data.user_id, course_data.course_name, course_data.description
     )
     if result == "Course with this name already exists":
         raise HTTPException(status_code=400, detail=result)
     return {"message": result}
+
+
+class TeacherCourseRequest(BaseModel):
+    user_id: int
+
+
+@app.post("/teacher/courses")
+async def teacher_courses(course_request: TeacherCourseRequest):
+    courses = get_teacher_courses(course_request.user_id)
+    if courses is None:
+        raise HTTPException(
+            status_code=404,
+            detail="No courses found for the teacher or teacher not found",
+        )
+    return {"courses": courses}
+
+
+class CourseInfoCreate(BaseModel):
+    course_id: int
+    information: str
+
+
+@app.post("/teacher/createCourseInfo")
+async def create_course_info_endpoint(course_info: CourseInfoCreate):
+    message = create_course_info_for_course(
+        course_info.course_id, course_info.information
+    )
+    return {"message": message}
+
+
+class CourseAssignmentCreate(BaseModel):
+    course_id: int
+    assignment_name: str
+
+
+@app.post("/teacher/createCourseAssignment")
+async def create_course_assignment_endpoint(assignment: CourseAssignmentCreate):
+    message = create_assignment_for_course(
+        assignment.course_id, assignment.assignment_name
+    )
+    return {"message": message}
+
+
+class CourseTestCreate(BaseModel):
+    module_id: int
+    test_name: str
+
+
+@app.post("/teacher/createTest")
+async def create_test_endpoint(test: CourseTestCreate):
+    message = create_test_for_course(test.course_id, test.test_name)
+    return {"message": message}
+
+
+class CourseDetailsRequest(BaseModel):
+    course_id: int
+
+
+@app.post("/teacher/courseDetails")
+async def course_details(course_request: CourseDetailsRequest):
+    details = get_course_details(course_request.course_id)
+    if not details:
+        raise HTTPException(status_code=404, detail="Course details not found")
+    return {"course_details": details}
+
+
+"""
+Student Endpoints
+
+"""
+
+
+@app.get("/courses")
+async def all_courses():
+    courses = get_all_courses()
+    if not courses:
+        raise HTTPException(status_code=404, detail="No courses found")
+    return {"courses": courses}
+
+
+class StudentCourseRequest(BaseModel):
+    user_id: int
+
+
+@app.post("/student/courses")
+async def student_courses(course_request: StudentCourseRequest):
+    courses = get_student_courses(course_request.user_id)
+    if courses is None:
+        raise HTTPException(
+            status_code=404,
+            detail="No courses found for the teacher or teacher not found",
+        )
+    return {"courses": courses}
 
 
 class CourseEnrollment(BaseModel):
@@ -78,15 +194,3 @@ async def add_course(course_enrollment: CourseEnrollment):
     if result == "Student already enrolled in this course":
         raise HTTPException(status_code=400, detail="Already enrolled in course")
     return {"message": result}
-
-
-@app.get("/student/courses")
-async def get_student_courses():
-    # Fetch courses for the student from the database.
-    return {"message": "Courses for student"}
-
-
-@app.get("/teacher/courses")
-async def get_teacher_courses():
-    # Fetch courses taught by the teacher from the database.
-    return {"message": "Courses for teacher"}
