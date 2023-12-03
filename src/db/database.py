@@ -185,37 +185,55 @@ def create_test_for_course(course_id, test_name):
     return "Test created successfully in a new module"
 
 
-def get_course_details(course_id):
-    course_details = {}
+def get_course_modules(course_id):
+    course_modules = {"modules": []}  # Renamed key to "modules"
 
     # Fetch Modules for the course
-    modules_query = "SELECT * FROM Modules WHERE CourseID = %s;"
+    modules_query = (
+        "SELECT ModuleID, ModuleName, Description FROM Modules WHERE CourseID = %s;"
+    )
     modules = execute_query(modules_query, (course_id,), fetch=True)
-    print(modules)
-    # For each module, fetch related assignments, course info, and tests
+
     for module in modules:
         module_id = module[0]  # Assuming ModuleID is the first column
-
-        # Fetch Assignments for the module
-        assignments_query = "SELECT * FROM Assignments WHERE ModuleID = %s;"
-        module_assignments = execute_query(assignments_query, (module_id,), fetch=True)
-
-        # Fetch Course Info for the module
-        course_info_query = "SELECT * FROM CourseInfo WHERE ModuleID = %s;"
-        module_course_info = execute_query(course_info_query, (module_id,), fetch=True)
-
-        # Fetch Tests for the module
-        tests_query = "SELECT * FROM Tests WHERE ModuleID = %s;"
-        module_tests = execute_query(tests_query, (module_id,), fetch=True)
-
-        course_details[module_id] = {
-            "module_info": module,
-            "assignments": module_assignments,
-            "course_info": module_course_info,
-            "tests": module_tests,
+        module_detail = {
+            "module_id": module_id,
+            "module_name": module[1],
+            "description": module[2],
+            "assignments": [],
+            "course_info": [],
+            "tests": [],
         }
 
-    return course_details
+        # Fetch Assignments for the module
+        assignments_query = (
+            "SELECT AssignmentID, AssignmentName FROM Assignments WHERE ModuleID = %s;"
+        )
+        assignments = execute_query(assignments_query, (module_id,), fetch=True)
+        for assignment in assignments:
+            module_detail["assignments"].append(
+                {"assignment_id": assignment[0], "assignment_name": assignment[1]}
+            )
+
+        # Fetch Course Info for the module
+        course_info_query = (
+            "SELECT CourseInfoID, Information FROM CourseInfo WHERE ModuleID = %s;"
+        )
+        course_infos = execute_query(course_info_query, (module_id,), fetch=True)
+        for info in course_infos:
+            module_detail["course_info"].append(
+                {"course_info_id": info[0], "information": info[1]}
+            )
+
+        # Fetch Tests for the module
+        tests_query = "SELECT TestID, TestName FROM Tests WHERE ModuleID = %s;"
+        tests = execute_query(tests_query, (module_id,), fetch=True)
+        for test in tests:
+            module_detail["tests"].append({"test_id": test[0], "test_name": test[1]})
+
+        course_modules["modules"].append(module_detail)
+
+    return course_modules
 
 
 def get_all_courses():
