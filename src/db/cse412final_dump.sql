@@ -425,6 +425,7 @@ COPY public.assignments (assignmentid, moduleid, assignmentname) FROM stdin;
 4	1	Assignment 2
 5	3	Assignment 1
 6	3	Assignment 2
+7	3	Assignment 3
 \.
 
 
@@ -534,7 +535,7 @@ COPY public.users (userid, username, password, usertype) FROM stdin;
 -- Name: assignments_assignmentid_seq; Type: SEQUENCE SET; Schema: public; Owner: ameya
 --
 
-SELECT pg_catalog.setval('public.assignments_assignmentid_seq', 6, true);
+SELECT pg_catalog.setval('public.assignments_assignmentid_seq', 7, true);
 
 
 --
