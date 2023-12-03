@@ -420,6 +420,11 @@ ALTER TABLE ONLY public.users ALTER COLUMN userid SET DEFAULT nextval('public.us
 
 COPY public.assignments (assignmentid, moduleid, assignmentname) FROM stdin;
 1	1	Assn1
+2	1	Assn1
+3	1	Assignment 1
+4	1	Assignment 2
+5	3	Assignment 1
+6	3	Assignment 2
 \.
 
 
@@ -429,6 +434,7 @@ COPY public.assignments (assignmentid, moduleid, assignmentname) FROM stdin;
 
 COPY public.courseinfo (courseinfoid, moduleid, information) FROM stdin;
 1	1	This is a test course.
+3	3	History is the study of past events, particularly those that have shaped the development of human societies and civilizations. It involves the examination and analysis of historical records, documents, artifacts, and the accounts of eyewitnesses to understand and interpret the actions, decisions, and consequences of people and societies from earlier times. Historians aim to uncover the causes and effects of historical events and movements, providing valuable insights into the evolution of human culture, politics, economics, and social structures. Studying history helps us gain a deeper appreciation of the world's rich and complex tapestry and provides valuable lessons for the present and future.
 \.
 
 
@@ -444,6 +450,7 @@ COPY public.courses (courseid, teacherid, coursename, description) FROM stdin;
 7	2	Test4	Test
 8	2	Test5	Test
 9	2	Introduction to Modern Web Development	Dive into the world of modern web development with this comprehensive course designed for aspiring web developers. Learn the fundamentals of HTML, CSS, and JavaScript, and how these technologies come together to create interactive and responsive websites. Explore the latest frameworks and libraries such as React and Node.js, and understand the principles of responsive design and web accessibility. By the end of this course, you'll have the skills to build your own web applications and a solid foundation for advanced web development topics. No prior experience required – this course is perfect for beginners! Dive into the world of modern web development with this comprehensive course designed for aspiring web developers. Learn the fundamentals of HTML, CSS, and JavaScript, and how these technologies come together to create interactive and responsive websites. Explore the latest frameworks and libraries such as React and Node.js, and understand the principles of responsive design and web accessibility. By the end of this course, you'll have the skills to build your own web applications and a solid foundation for advanced web development topics. No prior experience required – this course is perfect for beginners!
+10	1	History	A study of past events.
 \.
 
 
@@ -461,6 +468,7 @@ COPY public.grades (gradeid, studentid, testid, assignmentid, grade) FROM stdin;
 
 COPY public.modules (moduleid, courseid, modulename, description) FROM stdin;
 1	3	New Module for 3	Auto-generated module for 3
+3	10	New Module for 10	Auto-generated module for 10
 \.
 
 
@@ -498,6 +506,15 @@ COPY public.teachers (teacherid, userid) FROM stdin;
 
 COPY public.tests (testid, moduleid, testname) FROM stdin;
 1	1	Assn1
+2	1	Assn1
+3	1	Test 1
+4	1	Midterm Test
+5	1	Test 2
+6	1	Final Exam
+7	3	Exam 1
+8	3	Exam 2
+9	3	Exam 3
+10	3	Final Exam
 \.
 
 
@@ -517,21 +534,21 @@ COPY public.users (userid, username, password, usertype) FROM stdin;
 -- Name: assignments_assignmentid_seq; Type: SEQUENCE SET; Schema: public; Owner: ameya
 --
 
-SELECT pg_catalog.setval('public.assignments_assignmentid_seq', 1, true);
+SELECT pg_catalog.setval('public.assignments_assignmentid_seq', 6, true);
 
 
 --
 -- Name: courseinfo_courseinfoid_seq; Type: SEQUENCE SET; Schema: public; Owner: ameya
 --
 
-SELECT pg_catalog.setval('public.courseinfo_courseinfoid_seq', 2, true);
+SELECT pg_catalog.setval('public.courseinfo_courseinfoid_seq', 3, true);
 
 
 --
 -- Name: courses_courseid_seq; Type: SEQUENCE SET; Schema: public; Owner: ameya
 --
 
-SELECT pg_catalog.setval('public.courses_courseid_seq', 9, true);
+SELECT pg_catalog.setval('public.courses_courseid_seq', 10, true);
 
 
 --
@@ -545,7 +562,7 @@ SELECT pg_catalog.setval('public.grades_gradeid_seq', 1, false);
 -- Name: modules_moduleid_seq; Type: SEQUENCE SET; Schema: public; Owner: ameya
 --
 
-SELECT pg_catalog.setval('public.modules_moduleid_seq', 2, true);
+SELECT pg_catalog.setval('public.modules_moduleid_seq', 3, true);
 
 
 --
@@ -566,7 +583,7 @@ SELECT pg_catalog.setval('public.teachers_teacherid_seq', 2, true);
 -- Name: tests_testid_seq; Type: SEQUENCE SET; Schema: public; Owner: ameya
 --
 
-SELECT pg_catalog.setval('public.tests_testid_seq', 1, true);
+SELECT pg_catalog.setval('public.tests_testid_seq', 10, true);
 
 
 --

@@ -9,7 +9,7 @@ from .db.database import (
     get_teacher_courses,
     get_student_courses,
     get_all_courses,
-    get_course_details,
+    get_course_modules,
     create_course_info_for_course,
     create_assignment_for_course,
     create_test_for_course,
@@ -121,7 +121,7 @@ class CourseAssignmentCreate(BaseModel):
     assignment_name: str
 
 
-@app.post("/teacher/createCourseAssignment")
+@app.post("/teacher/createAssignment")
 async def create_course_assignment_endpoint(assignment: CourseAssignmentCreate):
     message = create_assignment_for_course(
         assignment.course_id, assignment.assignment_name
@@ -130,7 +130,7 @@ async def create_course_assignment_endpoint(assignment: CourseAssignmentCreate):
 
 
 class CourseTestCreate(BaseModel):
-    module_id: int
+    course_id: int
     test_name: str
 
 
@@ -144,12 +144,12 @@ class CourseDetailsRequest(BaseModel):
     course_id: int
 
 
-@app.post("/teacher/courseDetails")
+@app.post("/teacher/courseModules")
 async def course_details(course_request: CourseDetailsRequest):
-    details = get_course_details(course_request.course_id)
-    if not details:
-        raise HTTPException(status_code=404, detail="Course details not found")
-    return {"course_details": details}
+    modules = get_course_modules(course_request.course_id)
+    if not modules:
+        raise HTTPException(status_code=404, detail="Course modules not found")
+    return modules
 
 
 """
