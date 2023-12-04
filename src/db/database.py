@@ -300,10 +300,10 @@ def get_student_courses(user_id):
         for course in result:
             courses.append(
                 {
-                    "CourseID": course[0],
-                    "CourseName": course[1],
-                    "Description": course[2],
-                    "TeacherID": course[3],
+                    "course_id": course[0],
+                    "course_name": course[1],
+                    "description": course[2],
+                    "teacher_id": course[3],
                 }
             )
     return courses
