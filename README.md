@@ -28,7 +28,7 @@ First, create a new database:
 psql
 
 # Create a new database
-CREATE DATABASE cse412_final;
+CREATE DATABASE cse412final;
 ```
 
 ### Importing the Database Dump
