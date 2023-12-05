@@ -261,7 +261,15 @@ def get_all_courses():
     return courses
 
 
-def enroll_student_in_course(student_id, course_id):
+def enroll_student_in_course(user_id, course_id):
+    # Convert user_id to student_id
+    student_id_query = "SELECT StudentID FROM Students WHERE UserID = %s;"
+    student_result = execute_query(student_id_query, (user_id,), fetch=True)
+    if not student_result:
+        return "Student not found for the given user_id"
+
+    student_id = student_result[0][0]  # Assuming StudentID is the first column
+
     # Check if the student is already enrolled in the course
     enrollment_exists_query = (
         "SELECT * FROM StudentCourse WHERE StudentID = %s AND CourseID = %s;"

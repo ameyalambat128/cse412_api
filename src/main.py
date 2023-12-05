@@ -182,7 +182,7 @@ async def student_courses(course_request: StudentCourseRequest):
 
 
 class CourseEnrollment(BaseModel):
-    student_id: int
+    user_id: int
     course_id: int
 
 
