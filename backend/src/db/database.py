@@ -3,6 +3,7 @@ import bcrypt
 from psycopg2 import OperationalError
 
 
+# Change User in conn
 def get_db_connection():
     try:
         conn = psycopg2.connect(
