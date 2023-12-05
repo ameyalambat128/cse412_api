@@ -35,7 +35,7 @@ CREATE DATABASE cse412final;
 
 ```bash
 # Import the dump into your database
-psql cse412_final < backend/src/db/cse412final_dump.sql
+psql cse412final < backend/src/db/cse412final_dump.sql
 ```
 
 ## API Setup (FastAPI)
