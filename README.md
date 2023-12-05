@@ -42,7 +42,7 @@ psql cse412final < backend/src/db/cse412final_dump.sql
 
 ```bash
 # Clone the repository
-git clone [repository URL]
+git clone https://github.com/ameyalambat128/savnac_CSE412
 
 # Navigate to the project directory
 cd savnac_CSE412
