@@ -14,6 +14,15 @@ This is Savnac a student/teacher dashboard.
 
 > ⚠️ Please follow the steps in the order given below.
 
+## Clone the Repository
+
+```bash
+# Clone the repository
+git clone https://github.com/ameyalambat128/savnac_CSE412
+
+# Navigate to the project directory
+cd savnac_CSE412
+```
 ## Database Setup (PostgreSQL)
 
 This project uses a PostgreSQL database. Follow the steps below to set up the database.
@@ -41,12 +50,6 @@ psql cse412final < backend/src/db/cse412final_dump.sql
 ## API Setup (FastAPI)
 
 ```bash
-# Clone the repository
-git clone https://github.com/ameyalambat128/savnac_CSE412
-
-# Navigate to the project directory
-cd savnac_CSE412
-
 # Create a virtual environment
 python -m venv .venv
 
@@ -59,12 +62,6 @@ source .venv/bin/activate
 
 # Install the dependencies
 pip install -r requirements.txt
-
-# Set environment variables
-# Add instructions or a script to set environment variables (DB connection, API keys, etc.)
-
-# Run the application
-uvicorn main:app --reload
 ```
 
 - Go to `backend/src/db/database.py`
@@ -83,6 +80,14 @@ def get_db_connection():
     except OperationalError as e:
         print(f"An error occurred: {e}")
         return None
+```
+### Run the API
+
+```bash
+# Run the application
+uvicorn main:app --reload
+# or
+./start.sh
 ```
 
 ## Frontend Setup (SwiftUI)
