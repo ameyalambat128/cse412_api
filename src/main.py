@@ -189,7 +189,7 @@ class CourseEnrollment(BaseModel):
 @app.post("/student/enroll")
 async def add_course(course_enrollment: CourseEnrollment):
     result = enroll_student_in_course(
-        course_enrollment.student_id, course_enrollment.course_id
+        course_enrollment.user_id, course_enrollment.course_id
     )
     if result == "Student already enrolled in this course":
         raise HTTPException(status_code=400, detail="Already enrolled in course")
